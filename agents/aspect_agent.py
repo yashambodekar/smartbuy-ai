@@ -1,6 +1,7 @@
 import json
 
 from utils.llm import llm
+from utils.json_parser import extract_json
 
 
 def aspect_agent(state):
@@ -67,8 +68,8 @@ def aspect_agent(state):
 
     try:
 
-        analysis = json.loads(
-            response.content.strip()
+        analysis = extract_json(
+            response.content
         )
 
         return {

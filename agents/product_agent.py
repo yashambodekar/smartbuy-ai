@@ -7,13 +7,18 @@ def product_agent(state):
         state["product_url"]
     )
 
+    if product.get("source") == "cache":
+       print("\nWARNING: Using Cached Product Data\n")
+
     return {
-        **state,
-        "product_data": {
-            "title": product["title"],
-            "price": product["price"],
-            "rating": product["rating"],
-            "review_count": product["review_count"]
-        },
-        "reviews": product["reviews"]
-    }
+    **state,
+    "product_data": {
+        "title": product["title"],
+        "price": product["price"],
+        "rating": product["rating"],
+        "review_count": product["review_count"],
+        "source": product.get("source", "unknown")
+    },
+    "data_source": product.get("source", "unknown"),
+    "reviews": product["reviews"]
+}

@@ -49,7 +49,13 @@ def scrape_product(url):
         "Accept-Language": "en-US,en;q=0.9"
     }
 
+    
+
     try:
+       
+       if not url.startswith(("http://", "https://")):
+           url = "https://" + url
+
        response = requests.get(
         url,
         headers=headers,
@@ -65,6 +71,7 @@ def scrape_product(url):
         cached = load_cache()
 
         if cached:
+             cached["source"] = "cache"
              return cached
 
         return {
@@ -157,7 +164,8 @@ def scrape_product(url):
       "price": price,
       "rating": rating,
       "review_count": review_count,
-      "reviews": reviews
+      "reviews": reviews,
+      "source": "live"
    }
 
     if title != "N/A":
@@ -179,6 +187,7 @@ def scrape_product(url):
     cached = load_cache()
 
     if cached:
-      return cached
+       cached["source"] = "cache"
+       return cached
     
     return product_data

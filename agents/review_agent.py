@@ -1,6 +1,7 @@
 import json
 
 from utils.llm import llm
+from utils.json_parser import extract_json
 
 
 def review_agent(state):
@@ -77,8 +78,8 @@ def review_agent(state):
 
     try:
 
-        analysis = json.loads(
-            response.content.strip()
+        analysis = extract_json(
+            response.content
         )
 
         return {

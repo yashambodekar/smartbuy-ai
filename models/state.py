@@ -3,16 +3,12 @@ from typing import TypedDict
 
 class ShoppingState(TypedDict):
 
-    # Input
     product_url: str
 
-    # Product Information
     product_data: dict
 
-    # Raw Reviews
     reviews: list
 
-    # Review Intelligence Agent Output
     category: str
 
     detected_aspects: list
@@ -27,10 +23,8 @@ class ShoppingState(TypedDict):
 
     review_summary: str
 
-    # Aspect Analysis Agent Input
     aspect: str
 
-    # Aspect Analysis Agent Output
     aspect_score: float
 
     aspect_pros: list
@@ -39,9 +33,20 @@ class ShoppingState(TypedDict):
 
     aspect_summary: str
 
-    # Verdict Generator Output
     final_score: float
 
     recommendation: str
 
     verdict: str
+
+    data_source: str
+
+    payment_offers: list
+
+    best_payment_option: dict
+
+    best_price: float
+
+    total_savings: float
+
+    recommendations: list
