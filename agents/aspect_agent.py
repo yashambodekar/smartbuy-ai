@@ -1,3 +1,5 @@
+import json
+
 from utils.llm import llm
 
 
@@ -10,13 +12,16 @@ def aspect_agent(state):
 
     aspect = state.get(
         "aspect",
-        "general"
+        ""
     )
 
     if not reviews:
 
         return {
             **state,
+            "aspect_score": 0.0,
+            "aspect_pros": [],
+            "aspect_cons": [],
             "aspect_summary":
             "No reviews found."
         }
@@ -26,21 +31,27 @@ def aspect_agent(state):
     )
 
     prompt = f"""
-    You are an expert e-commerce review analyst.
-
     Analyze ONLY information related to:
 
     {aspect}
 
-    Ignore unrelated review content.
+    Ignore unrelated information.
 
-    Return:
+    Return ONLY valid JSON.
 
-    1. Aspect Score (/10)
-    2. Positive Points
-    3. Negative Points
-    4. Customer Consensus
-    5. Final Verdict on this aspect
+    Format:
+
+    {{
+        "aspect_score": 0,
+        "aspect_pros": [],
+        "aspect_cons": [],
+        "aspect_summary": ""
+    }}
+
+    Rules:
+
+    - aspect_score between 0 and 10
+    - output only JSON
 
     Reviews:
 
@@ -51,8 +62,57 @@ def aspect_agent(state):
         prompt
     )
 
-    return {
-        **state,
-        "aspect_summary":
-        response.content
-    }
+    print("\nRAW ASPECT RESPONSE:\n")
+    print(response.content)
+
+    try:
+
+        analysis = json.loads(
+            response.content.strip()
+        )
+
+        return {
+            **state,
+
+            "aspect_score":
+            float(
+                analysis.get(
+                    "aspect_score",
+                    0
+                )
+            ),
+
+            "aspect_pros":
+            analysis.get(
+                "aspect_pros",
+                []
+            ),
+
+            "aspect_cons":
+            analysis.get(
+                "aspect_cons",
+                []
+            ),
+
+            "aspect_summary":
+            analysis.get(
+                "aspect_summary",
+                ""
+            )
+        }
+
+    except Exception as e:
+
+        print(
+            "JSON Parse Error:",
+            e
+        )
+
+        return {
+            **state,
+            "aspect_score": 0.0,
+            "aspect_pros": [],
+            "aspect_cons": [],
+            "aspect_summary":
+            response.content
+        }

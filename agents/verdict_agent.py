@@ -1,59 +1,54 @@
-from utils.llm import llm
-
-
 def verdict_agent(state):
 
-    product_data = state.get(
-        "product_data",
-        {}
+    review_score = state.get(
+        "review_score",
+        0
     )
 
-    review_summary = state.get(
-        "review_summary",
-        ""
+    aspect_score = state.get(
+        "aspect_score",
+        0
     )
 
-    aspect = state.get(
-        "aspect",
-        "general"
+    final_score = round(
+        (
+            review_score * 0.7
+            +
+            aspect_score * 0.3
+        ),
+        1
     )
 
-    aspect_summary = state.get(
-        "aspect_summary",
-        ""
-    )
+    if final_score >= 8:
 
-    prompt = f"""
-    You are an expert shopping advisor.
+        recommendation = "BUY"
 
-    Product Details:
-    {product_data}
+    elif final_score >= 6:
 
-    Overall Review Analysis:
-    {review_summary}
+        recommendation = "CONSIDER"
 
-    Aspect Analyzed:
-    {aspect}
+    else:
 
-    Aspect Analysis:
-    {aspect_summary}
+        recommendation = "AVOID"
 
-    Based on all the above information provide:
+    verdict = f"""
+Final Score: {final_score}/10
 
-    1. Overall Product Score (0-100)
-    2. BUY / CONSIDER / AVOID
-    3. Top Reasons to Buy
-    4. Potential Concerns
-    5. Final Recommendation (2-3 lines)
+Recommendation: {recommendation}
 
-    Keep the answer structured and concise.
-    """
+Sentiment:
+{state.get("sentiment","unknown")}
 
-    response = llm.invoke(
-        prompt
-    )
+Review Summary:
+{state.get("review_summary","")}
+
+Aspect Summary:
+{state.get("aspect_summary","")}
+"""
 
     return {
         **state,
-        "verdict": response.content
+        "final_score": final_score,
+        "recommendation": recommendation,
+        "verdict": verdict
     }
