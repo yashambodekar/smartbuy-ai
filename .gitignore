@@ -1,0 +1,52 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual Environment
+venv/
+.env
+
+# Environment Variables
+.env.local
+.env.production
+
+# IDE
+.vscode/
+.idea/
+
+# OS Files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Cache
+.cache/
+
+# Testing
+.pytest_cache/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Build
+dist/
+build/
+
+# Local Data
+amazon_debug.html
+
+# Secrets
+credentials.json
+secrets.json
+
+# ChromaDB
+chroma_db/
+
+# LangGraph
+.langgraph/
+
+# Temporary files
+*.tmp
